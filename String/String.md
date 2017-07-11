@@ -1,6 +1,6 @@
 String 
 ===
-String ADT:
+[String ADT:](https://github.com/JimmyJUNUCAS/Daily-Code/blob/master/String/String.md#string-adt)
 
 String Match:
 > KMP <br>
