@@ -3,9 +3,9 @@ String
 String ADT:
 
 String Match:
-> KMP
-> BC + GS
-> KR
+> KMP <br>
+> BC + GS <br>
+> KR <br>
 
 String ADT:
 ---
