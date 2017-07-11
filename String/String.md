@@ -37,6 +37,7 @@ String Match:
 >1 多个匹配，选择最右字符，最右字符在当前失配字符左侧，移动至坏字符<br>
 >2 多个匹配，选择最右字符，最右字符在当前失配字符右侧，移动一个字符<br>
 >3 无匹配，将整个字符串移过此坏字符<br>
+<<<<<<< HEAD
 针对此三种情况构造 模式串 对应的BC表，通过构造BC表完成此算法最主要部分
 ``` C++
 int* buildBC ( char* P ) { //构造Bad Charactor Shift表：O(m + 256)
@@ -48,5 +49,7 @@ int* buildBC ( char* P ) { //构造Bad Charactor Shift表：O(m + 256)
    return bc;
 }
 ```
+=======
+>>>>>>> origin/master
 
 #### BC: Bad Char
