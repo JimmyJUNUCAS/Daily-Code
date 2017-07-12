@@ -57,7 +57,10 @@ int* buildBC ( char* P ) { //构造Bad Charactor Shift表：O(m + 256)
 可以分为两种情况：
 >1 找到的匹配串小于好后缀的长度。<br>
 >2 找到的匹配串大于好后缀的长度。<br>
+
 构建好后缀通过两个步骤，1 是构建最大匹配后缀长度表。 2 是构建好后缀位移量表<br>
+
+---
 1 构建最大匹配后缀长度表
 ``` C++
 int* buildSS ( char* P ) { //构造最大匹配后缀长度表：O(m)
@@ -94,6 +97,6 @@ int* buildGS ( char* P ) { //构造好后缀位移量表：O(m)
    for ( size_t j = 0; j < m - 1; j ++ ) //画家算法：正向扫描P[]各字符，gs[j]不断递减，直至最小
       gs[m - ss[j] - 1] = m - j - 1; //m - j - 1必是其gs[m - ss[j] - 1]值的一种选择
    /*DSA*/printGS ( P, gs );
-   delete [] ss; return gs;
+   delete [] ss;   return gs;
 }
 ```
