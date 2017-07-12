@@ -30,6 +30,7 @@ String Match:
 失败决定了此次循环是否结束。（判定相等与判定不等->差距很大）<br>
 同时越靠后的失败其价值更高，因为有其存在省略了接下来的比对 <br>
 综上所述，BC/GS选择了 从右向左 检索的方式来取代 KMP 算法 从左向右 的检索方式。
+
 #### BC: Bad Char
 将失配的字符定义为坏字符<br>
 当定位此轮循环失配之后，模式符应该继续移动，移动到模式符中与此坏字符匹配为止。
@@ -100,3 +101,27 @@ int* buildGS ( char* P ) { //构造好后缀位移量表：O(m)
    delete [] ss;   return gs;
 }
 ```
+---
+算法整体为：
+``` C++
+int match ( char* P, char* T ) { //Boyer-Morre算法（完全版，兼顾Bad Character与Good Suffix）
+   int* bc = buildBC ( P ); int* gs = buildGS ( P ); //构造BC表和GS表
+   size_t i = 0; //模式串相对于文本串的起始位置（初始时与文本串左对齐）
+   while ( strlen ( T ) >= i + strlen ( P ) ) { //不断右移（距离可能不止一个字符）模式串
+      int j = strlen ( P ) - 1; //从模式串最末尾的字符开始
+      while ( P[j] == T[i + j] ) //自右向左比对
+         if ( 0 > --j ) break; /*DSA*/showProgress ( T, P, i, j ); printf ( "\n" ); getchar();
+      if ( 0 > j ) //若极大匹配后缀 == 整个模式串（说明已经完全匹配）
+         break; //返回匹配位置
+      else //否则，适当地移动模式串
+         i += __max ( gs[j], j - bc[ T[i + j] ] ); //位移量根据BC表和GS表选择大者
+   }
+   delete [] gs; delete [] bc; //销毁GS表和BC表
+   return i;
+}
+```
+
+---
+### 2.3 KR<br>
+整体思路：将一切字符串均看做是整数，所以字符串的匹配转化成整数的匹配过程。<br>
+通过散列技术完成字符串与整数的匹配。同时通过指纹快速更新来完成快速匹配的过程。
