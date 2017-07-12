@@ -5,7 +5,7 @@ String
 [2 String Match:](https://github.com/JimmyJUNUCAS/Daily-Code/blob/master/String/String.md#string-match)
 
 	* 2.1 KMP 
-	* 2.2 BC + GS 
+	* 2.2 BM (BC + GS) 
 	* 2.3 KR 
 
 String ADT:
@@ -23,9 +23,9 @@ String ADT:
 
 String Match:
 ---
-### KMP<br>
+### 2.1 KMP<br>
 
-### BC+GS<br>
+### 2.2 BM<br>
 整体思路：KMP关注成功的匹配，而失败在整体思路来看，显得更重要。<br>
 失败决定了此次循环是否结束。（判定相等与判定不等->差距很大）<br>
 同时越靠后的失败其价值更高，因为有其存在省略了接下来的比对 <br>
@@ -50,6 +50,50 @@ int* buildBC ( char* P ) { //构造Bad Charactor Shift表：O(m + 256)
 }
 ```
 =======
-
-
-#### BC: Bad Char
+#### GS: Good String
+将失配后已经匹配过的后缀称为好后缀，希望将好后缀能够再次对齐。<br>
+将好后缀再次对齐可以节省大量的试错时间。充分利用了已经匹配的经验。<br>
+构建好后缀表的思路是，在模式串前缀中寻找与好后缀匹配的子串。<br>
+可以分为两种情况：
+>1 找到的匹配串小于好后缀的长度。<br>
+>2 找到的匹配串大于好后缀的长度。<br>
+构建好后缀通过两个步骤，1 是构建最大匹配后缀长度表。 2 是构建好后缀位移量表<br>
+1 构建最大匹配后缀长度表
+``` C++
+int* buildSS ( char* P ) { //构造最大匹配后缀长度表：O(m)
+   int m = strlen ( P ); int* ss = new int[m]; //Suffix Size表
+   ss[m - 1]  =  m; //对最后一个字符而言，与之匹配的最长后缀就是整个P串
+// 以下，从倒数第二个字符起自右向左扫描P，依次计算出ss[]其余各项
+   for ( int lo = m - 1, hi = m - 1, j = lo - 1; j >= 0; j -- )
+      if ( ( lo < j ) && ( ss[m - hi + j - 1] <= j - lo ) ) //情况一
+         ss[j] =  ss[m - hi + j - 1]; //直接利用此前已计算出的ss[]
+      else { //情况二
+         hi = j; lo = __min ( lo, hi );
+         while ( ( 0 <= lo ) && ( P[lo] == P[m - hi + lo - 1] ) ) //二重循环？
+            lo--; //逐个对比处于(lo, hi]前端的字符
+         ss[j] = hi - lo;
+      }
+   /*DSA*/printf ( "-- ss[] Table -------\n" );
+   /*DSA*/for ( int i = 0; i < m; i ++ ) printf ( "%4d", i ); printf ( "\n" );
+   /*DSA*/printString ( P ); printf ( "\n" );
+   /*DSA*/for ( int i = 0; i < m; i ++ ) printf ( "%4d", ss[i] ); printf ( "\n\n" );
+   return ss;
+}
+```
+---
+2 构建好后缀位移量表
+``` C++
+int* buildGS ( char* P ) { //构造好后缀位移量表：O(m)
+   int* ss = buildSS ( P ); //Suffix Size table
+   size_t m = strlen ( P ); int* gs = new int[m]; //Good Suffix shift table
+   for ( size_t j = 0; j < m; j ++ ) gs[j] = m; //初始化
+   for ( size_t i = 0, j = m - 1; j < UINT_MAX; j -- ) //逆向逐一扫描各字符P[j]
+      if ( j + 1 == ss[j] ) //若P[0, j] = P[m - j - 1, m)，则
+         while ( i < m - j - 1 ) //对于P[m - j - 1]左侧的每个字符P[i]而言（二重循环？）
+            gs[i++] = m - j - 1; //m - j - 1都是gs[i]的一种选择
+   for ( size_t j = 0; j < m - 1; j ++ ) //画家算法：正向扫描P[]各字符，gs[j]不断递减，直至最小
+      gs[m - ss[j] - 1] = m - j - 1; //m - j - 1必是其gs[m - ss[j] - 1]值的一种选择
+   /*DSA*/printGS ( P, gs );
+   delete [] ss; return gs;
+}
+```
