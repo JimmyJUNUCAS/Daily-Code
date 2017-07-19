@@ -5,7 +5,7 @@ CV
 
 |  |姬伟军     |
 | ---------- | -----------:|
-| Tel:18691808647   | Email:JIWEIJUN_WHU@126.com   |
+| Tel:18691808647   |     Email:JIWEIJUN_WHU@126.com   |
 
 
 
